@@ -1,2 +1,3 @@
 Test Wallet : https://ghostnet.tzkt.io/tz1SNAC5sXf3yujk4q7yhUZwD6e2nScu6TN5/operations/
 Token Smart Contract : https://ghostnet.tzkt.io/tz1aPDc5p81ECtUHunqjPQtNCBg9BwPjbnQX/operations/
+Token : https://ghostnet.tzkt.io/KT1KutsbggvvkHCq7ypnByTx7VsVsGEfTdVf/tokens/0/transfers
