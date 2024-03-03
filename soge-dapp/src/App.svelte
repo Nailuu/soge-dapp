@@ -70,24 +70,17 @@
     balance = balanceMutez.div(1000000).toFormat(2);
   };
 
-  // In progress to retrieve wallet balance
+  // Get token balance
   // const getTokenBalance = async () => {
-  //   Tezos.setWalletProvider(wallet);
-  //   const contract = await Tezos.wallet.at(contractAddress);
-
-  //   const transactionParams = await contract.methods
-  //     .getBalance()
-  //     .toTransferParams({
-  //       owner: address,
-  //     });
-  //   const estimate = await Tezos.estimate.transfer(transactionParams);
-
-  //   const operation = await Tezos.wallet
-  //     .transfer({
-  //       ...transactionParams,
-  //       ...estimate,
+  //   fetch(`https://api.ghostnet.tzkt.io/v1/tokens/balances`)
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       history = data;
   //     })
-  //       .send();
+  //     .catch((error) => {
+  //       console.log(error);
+  //       return [];
+  //     });
   // }
 </script>
 
