@@ -65,7 +65,7 @@ asset token_metadata to big_map {
 
 entry %transfer (%from : address, %to : address, value : nat) {
   require {
-    r1 : ledger[%from].tokens >= value otherwise "NotEnoughBalance";
+    r1_1 : ledger[%from].tokens >= value otherwise "NotEnoughBalance";
   }
   effect {
     if caller <> %from then (
@@ -82,11 +82,11 @@ constant USDT : address = KT1XnTn74bUtxHfDtBmm2bGZAQfhPbvKWR8o
 
 entry sell (value : nat) {
   require {
-        r1 : contains(whitelist, caller)
-        r2 : ledger[caller].amount >= value otherwise "NotEnoughBalance"
+        r2_1 : contains(whitelist, caller);
+        r2_2 : ledger[caller].tokens >= value otherwise "NotEnoughBalance";
   }
   effect {
-        transfer 0tz to entry self.%transfer(caller, self.address, value)
+        transfer 0tz to entry self.%transfer(caller, self_address, value)
         
         // call to another smart contract that transfer USDT to the caller based on the value of the token
         // the smart contract would be connected to an oracle to get the conversion rate USDT <> SOGE
@@ -97,8 +97,8 @@ entry sell (value : nat) {
 
 entry approve(spender : address, value : nat) {
   require {
-        r1 : contains(whitelist, caller)
-        r2 : ledger[caller].tokens > 0
+        r3_1 : contains(whitelist, caller);
+        r3_2 : ledger[caller].tokens > 0;
   }
   effect {
         const previous = ledger[caller] ? (the.allowance[spender] ? the : 0) : 0;
@@ -107,13 +107,13 @@ entry approve(spender : address, value : nat) {
   }
 }
 
-entry revoke(%address : address) {
+entry revoke(%address_ : address) {
   require {
-        r1 : contains(whitelist, caller)
-        r2 : contains(ledger[caller].allowance, %address)
+        r4_1 : contains(whitelist, caller);
+        r4_2 : contains(ledger[caller].allowance, %address_);
   }
   effect {
-       ledger.remove(%address)
+       ledger.remove(%address_)
   }
 }
 

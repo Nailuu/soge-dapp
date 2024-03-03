@@ -9,13 +9,15 @@
 
   const rpcUrl = "https://ghostnet.ecadinfra.com";
   const Tezos = new TezosToolkit(rpcUrl);
-  const contractAddress = "KT1R4i4qEaxF7v3zg1M8nTeyrqk8JFmdGLuu";
+  const contractAddress = "KT1KutsbggvvkHCq7ypnByTx7VsVsGEfTdVf";
 
   let wallet;
   let address;
   let balance;
 
   let history = [];
+
+  let whitelisted = false;
 
   let depositButtonActive = false;
 
@@ -31,7 +33,20 @@
     await getWalletBalance(address);
     wallet = newWallet;
     depositButtonActive = true;
+    isWhitelisted();
   };
+
+  const isWhitelisted = async () => {
+    fetch(`https://api.ghostnet.tzkt.io/v1/contracts/${contractAddress}/storage`)
+    .then((response) => response.json())
+      .then((data) => {
+        whitelisted = data.whitelist.hasOwnProperty(address)
+      })
+      .catch((error) => {
+        console.log(error);
+        return [];
+      });
+  }
 
   const disconnectWallet = () => {
     wallet.client.clearActiveAccount();
@@ -54,6 +69,26 @@
     const balanceMutez = await Tezos.tz.getBalance(walletAddress);
     balance = balanceMutez.div(1000000).toFormat(2);
   };
+
+  // In progress to retrieve wallet balance
+  // const getTokenBalance = async () => {
+  //   Tezos.setWalletProvider(wallet);
+  //   const contract = await Tezos.wallet.at(contractAddress);
+
+  //   const transactionParams = await contract.methods
+  //     .getBalance()
+  //     .toTransferParams({
+  //       owner: address,
+  //     });
+  //   const estimate = await Tezos.estimate.transfer(transactionParams);
+
+  //   const operation = await Tezos.wallet
+  //     .transfer({
+  //       ...transactionParams,
+  //       ...estimate,
+  //     })
+  //       .send();
+  // }
 </script>
 
 <main>
@@ -75,7 +110,7 @@
     </div>
   </Navbar>
   <div class="container">
-    {#if wallet}
+    {#if whitelisted}
       <Card color="gray" size="lg">
         <h5 class="mb-4 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Wallet</h5>
         <div class="flex gap-4 items-center mb-3 font-normal text-gray-500 dark:text-gray-400">
@@ -110,6 +145,8 @@
           <Button on:click={disconnectWallet}>Disconnect wallet</Button>
         </div>
       </Card>
+    {:else if wallet}
+      <h1>YOUR NOT WHITELIST!</h1>
     {:else}
       <div class="flex flex-col items-center">
         <h2 class="mb-6">Please connect your wallet</h2>
